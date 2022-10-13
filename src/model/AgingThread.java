@@ -24,7 +24,7 @@ public class AgingThread extends Thread {
 	/**
 	 * Page table to recalculate aging counter.
 	 */
-	private PT pt; // MONITOR
+	private PT pt;
 
 	// ----------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -56,9 +56,7 @@ public class AgingThread extends Thread {
 			}
 
 			// Updates the counter of each PT entry, according to the aging algorithm
-			for (Entry actual: pt.getTable()) {
-				actual.adjustAgingCounter();
-			}
+			pt.updateAgingCounters();
 		}
 	}
 }

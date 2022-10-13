@@ -28,9 +28,15 @@ public class TLB extends ETable {
 
 	/**
 	 * Deletes the first entry that went into the TLB queue (top), and adds a new last entry.
+	 * If the new entry references a frame replaced due to a PT miss, it needs to update any entry in the TLB with that frame to -1.
 	 * @param repEntry New last entry that is going to replace the first one. repEntry != null.
 	 */
-	public void replace(Entry repEntry) {
+	public synchronized void replace(Entry repEntry) {
+		for (Entry actual: table) {
+			if (actual.getFrame() == repEntry.getFrame()) {
+				actual.setFrame(-1);
+			}
+		}
 		((LinkedList<Entry>) table).pollFirst();
 		table.add(repEntry);
 	}
@@ -40,7 +46,7 @@ public class TLB extends ETable {
 	 * @param page Number of page to find in the TLB. 0 <= page < size.
 	 * @return frame number of the corresponding page if found, -1 if not found.
 	 */
-	public int consult(int page) {
+	public synchronized int consult(int page) {
 		int frame = -1;
 		for (Entry actual: table) {
 			if (actual.getPage() == page) {

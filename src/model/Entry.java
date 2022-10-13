@@ -3,7 +3,7 @@ package model;
 import java.util.BitSet;
 
 /**
- * Class that represents a standard paging entry (# page, # frame).
+ * Class that represents a standard paging entry (# page, # frame) + referenced bit + counter.
  */
 public class Entry {
 
@@ -119,7 +119,7 @@ public class Entry {
 	
 	/**
 	 * Shifts the 8-bit aging counter to the right.
-	 * Changes the leftmost bit to 1 in the 8-bit aging counter.
+	 * Changes the leftmost bit to 1 in the 8-bit aging counter, if the entry was recently used.
 	 * Resets the referenced bit.
 	 */
 	public void adjustAgingCounter() {
@@ -129,7 +129,7 @@ public class Entry {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			count = 0; // empty bits equals zero
 		}
-		this.counter = BitSet.valueOf(new long[]{count/2});
+		this.counter = BitSet.valueOf(new long[]{count/2}); // Shift right
 		
 		if (isReferenced())
 			this.counter.set(COUNTER_BIT_SIZE-1, true);
