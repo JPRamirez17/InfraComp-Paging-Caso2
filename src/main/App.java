@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import model.AgingThread;
-import model.Entry;
 import model.PT;
 import model.TLB;
 
@@ -37,12 +36,12 @@ public class App {
 	/**
 	 * Total virtual address translation time (TLB and PT hits and miss).
 	 */
-	private static int transTime = 0;
+	private static long transTime = 0;
 
 	/**
 	 * Total data loading time (swap to RAM and RAM to CPU).
 	 */
-	private static int loadTime = 0;
+	private static long loadTime = 0;
 
 	/**
 	 * Determines whether the App thread is done.
@@ -116,7 +115,7 @@ public class App {
 				fin = true;
 
 			} catch (NumberFormatException e) {
-				System.out.println("\nPor favor ingresar valores v�lidos (naturales)\n\n");
+				System.out.println("\nPor favor ingresar valores validos (naturales)\n\n");
 			}
 		}
 		br.close();
@@ -173,7 +172,7 @@ public class App {
 					transTime += 30; // PT replace 30 ns
 					loadTime += 10000000; // Load page from swap 10ms
 				}
-				tlb.replace(new Entry(reference, translation)); // Updates TLB
+				tlb.replace(pt.getTable().get(reference)); // Updates TLB
 			}
 			loadTime += 30; // Load page from main memory 30ns
 			

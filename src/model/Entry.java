@@ -1,7 +1,5 @@
 package model;
 
-import java.util.BitSet;
-
 /**
  * Class that represents a standard paging entry (# page, # frame) + referenced bit + counter.
  */
@@ -14,7 +12,7 @@ public class Entry {
 	/**
 	 * Fixed aging counter size in bits.
 	 */
-	private final static int COUNTER_BIT_SIZE = 8;
+	public final static int COUNTER_BIT_SIZE = 8;
 
 	// ----------------------------------------------------------------------------
 	// ATTRIBUTES
@@ -38,7 +36,7 @@ public class Entry {
 	/**
 	 * Aging algorithm counter (8 bits)
 	 */
-	private BitSet counter;
+	private int counter;
 
 	// ----------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -54,7 +52,7 @@ public class Entry {
 		this.page = page;
 		this.frame = frame;
 		referenced = false;
-		counter = new BitSet(COUNTER_BIT_SIZE);
+		counter = 0;
 	}
 
 	// ----------------------------------------------------------------------------
@@ -113,7 +111,7 @@ public class Entry {
 	 * Returns the 8-bit aging counter.
 	 * @return entry counter.
 	 */
-	public BitSet getCounter() {
+	public int getCounter() {
 		return counter;
 	}
 	
@@ -123,16 +121,10 @@ public class Entry {
 	 * Resets the referenced bit.
 	 */
 	public void adjustAgingCounter() {
-		long count = 0;
-		try {
-			count = counter.toLongArray()[0];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			count = 0; // empty bits equals zero
-		}
-		this.counter = BitSet.valueOf(new long[]{count/2}); // Shift right
+		counter /= 2; // Shift right
 		
 		if (isReferenced())
-			this.counter.set(COUNTER_BIT_SIZE-1, true);
+			counter += Math.pow(2, COUNTER_BIT_SIZE-1);
 		
 		this.referenced = false;
 	}

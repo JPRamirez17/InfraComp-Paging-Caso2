@@ -56,16 +56,11 @@ public class PT extends ETable {
 			table.get(page).setFrame(newFrame);
 			ramSpaceUsed ++;
 		} else { // Replacement with aging algorithm
-			long minCounter = 256; // 2^8 max counter
+			int minCounter = (int) Math.pow(2, Entry.COUNTER_BIT_SIZE); // 2^8 max counter
 			int oldPage = 0;
 			for (int i = 0; i < table.size(); i++) {
 				Entry actual = table.get(i);
-				long counter = 0;
-				try {
-					counter = actual.getCounter().toLongArray()[0];
-				} catch (ArrayIndexOutOfBoundsException e) {
-					counter = 0; // empty bits equals zero
-				}
+				int counter = actual.getCounter();
 				int currentFrame = actual.getFrame();
 				if (currentFrame != -1 && counter <= minCounter) {
 					oldPage = i;
@@ -78,7 +73,7 @@ public class PT extends ETable {
 		}
 		return newFrame;
 	}
-
+	
 	/**
 	 * Updates the counter of each PT entry, according to the aging algorithm.
 	 */

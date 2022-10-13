@@ -32,11 +32,6 @@ public class TLB extends ETable {
 	 * @param repEntry New last entry that is going to replace the first one. repEntry != null.
 	 */
 	public synchronized void replace(Entry repEntry) {
-		for (Entry actual: table) {
-			if (actual.getFrame() == repEntry.getFrame()) {
-				actual.setFrame(-1);
-			}
-		}
 		((LinkedList<Entry>) table).pollFirst();
 		table.add(repEntry);
 	}
@@ -51,6 +46,7 @@ public class TLB extends ETable {
 		for (Entry actual: table) {
 			if (actual.getPage() == page) {
 				frame = actual.getFrame();
+				actual.setReferenced(true);
 			}
 		}
 		return frame;
