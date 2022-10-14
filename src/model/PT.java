@@ -53,14 +53,13 @@ public class PT extends ETable {
 		int newFrame = -1;
 		if (ramSpaceUsed < assignedRam) { // Assigns avaiable space in RAM
 			newFrame = ramSpaceUsed;
-			table.get(page).setFrame(newFrame);
 			ramSpaceUsed ++;
 		} else { // Replacement with aging algorithm
-			int minCounter = (int) Math.pow(2, Entry.COUNTER_BIT_SIZE); // 2^8 max counter
+			long minCounter = (long) Math.pow(2, Entry.COUNTER_BIT_SIZE); // 2^8 max counter
 			int oldPage = 0;
 			for (int i = 0; i < table.size(); i++) {
 				Entry actual = table.get(i);
-				int counter = actual.getCounter();
+				long counter = actual.getCounter();
 				int currentFrame = actual.getFrame();
 				if (currentFrame != -1 && counter <= minCounter) {
 					oldPage = i;
@@ -69,11 +68,13 @@ public class PT extends ETable {
 				}
 			}
 			table.get(oldPage).setFrame(-1);
-			table.get(page).setFrame(newFrame);
+			
 		}
+		table.get(page).setFrame(newFrame);
+		table.get(page).setReferenced(true);
 		return newFrame;
 	}
-	
+
 	/**
 	 * Updates the counter of each PT entry, according to the aging algorithm.
 	 */

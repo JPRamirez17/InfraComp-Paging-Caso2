@@ -28,12 +28,14 @@ public class TLB extends ETable {
 
 	/**
 	 * Deletes the first entry that went into the TLB queue (top), and adds a new last entry.
-	 * If the new entry references a frame replaced due to a PT miss, it needs to update any entry in the TLB with that frame to -1.
+	 * It only replaces an entry if it is not already in the TLB.
 	 * @param repEntry New last entry that is going to replace the first one. repEntry != null.
 	 */
 	public synchronized void replace(Entry repEntry) {
-		((LinkedList<Entry>) table).pollFirst();
-		table.add(repEntry);
+		if(consult(repEntry.getPage()) == -1) {
+			((LinkedList<Entry>) table).pollFirst();
+			table.add(repEntry);
+		}
 	}
 	
 	/**

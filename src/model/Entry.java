@@ -12,7 +12,7 @@ public class Entry {
 	/**
 	 * Fixed aging counter size in bits.
 	 */
-	public final static int COUNTER_BIT_SIZE = 8;
+	public final static int COUNTER_BIT_SIZE = 32;
 
 	// ----------------------------------------------------------------------------
 	// ATTRIBUTES
@@ -34,9 +34,9 @@ public class Entry {
 	private boolean referenced;
 
 	/**
-	 * Aging algorithm counter (8 bits)
+	 * Aging algorithm counter
 	 */
-	private int counter;
+	private long counter;
 
 	// ----------------------------------------------------------------------------
 	// CONSTRUCTOR
@@ -111,7 +111,7 @@ public class Entry {
 	 * Returns the 8-bit aging counter.
 	 * @return entry counter.
 	 */
-	public int getCounter() {
+	public long getCounter() {
 		return counter;
 	}
 	
@@ -124,7 +124,7 @@ public class Entry {
 		counter /= 2; // Shift right
 		
 		if (isReferenced())
-			counter += Math.pow(2, COUNTER_BIT_SIZE-1);
+			counter += (long) Math.pow(2, COUNTER_BIT_SIZE-1);
 		
 		this.referenced = false;
 	}

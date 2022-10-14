@@ -159,7 +159,6 @@ public class App {
 			int reference = Integer.parseInt(line);
 			
 			int translation = tlb.consult(reference);
-			transTime += 2; // TLB search 2 ns
 
 			// TLB miss
 			if(translation == -1) {
@@ -172,10 +171,21 @@ public class App {
 					transTime += 30; // PT replace 30 ns
 					loadTime += 10000000; // Load page from swap 10ms
 				}
-				tlb.replace(pt.getTable().get(reference)); // Updates TLB
+				else
+					loadTime += 30; // Load page from main memory 30ns
+				
+					tlb.replace(pt.getTable().get(reference)); // Updates TLB
+			} else {
+				transTime += 2; // TLB search hit 2 ns
+				loadTime += 30; // Load page from main memory 30ns
 			}
-			loadTime += 30; // Load page from main memory 30ns
-			
+
+			// Simulate all actions
+			try {
+				Thread.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			line = reader.readLine();
 		}
 		reader.close();
